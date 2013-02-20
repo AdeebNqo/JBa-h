@@ -50,7 +50,7 @@ class main{
 			System.out.println("        ''--.~.|/");
 			System.out.println("Welcome to JBa$h");
 			do{
-				System.out.print(username+"@JBa$h:"+working_directory+"~:");
+				System.out.print(username+"@JBa$h:#");
 				entered_cmd = terminal.readLine();
 				if (!entered_cmd.equals("exit")){
 					//if cmd does not contain pipes or "and(&)"
@@ -88,7 +88,7 @@ class main{
 								}
 								break;
 							case "pwd":
-								run("pwd");
+								System.out.println(pwd());
 								break;
 						}
 					}
@@ -317,9 +317,11 @@ class main{
 			}
 		}
 		else{
-			File tmp_dir = new File("./"+dir);
-                        if (tmp_dir.exists() && tmp_dir.isDirectory()){
-				System.out.println("Hello World, muhfucka");
+			File tmp_dir = new File(working_directory);
+			File move_to_dir = new File(tmp_dir.getAbsolutePath()+"/"+dir);
+			if (move_to_dir.exists() && move_to_dir.isDirectory()){
+				String my_dir = move_to_dir.getAbsolutePath();
+				working_directory = my_dir;
                         }
 			else{
 				//directory does not exist
