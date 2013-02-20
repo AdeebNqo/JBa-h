@@ -54,43 +54,15 @@ class main{
 				entered_cmd = terminal.readLine();
 				if (!entered_cmd.equals("exit")){
 					//if cmd does not contain pipes or "and(&)"
-					if ((!entered_cmd.contains("|")) &&(!entered_cmd.contains("&"))){
-						String[] whole_entered_cmd = entered_cmd.split(" ");
-						switch(whole_entered_cmd[0]){
-							case "clear":
-								run("clear");
-								break;
-							case "ls":
-								boolean option_l = (whole_entered_cmd.length==3 ? true:false);
-								if (whole_entered_cmd.length==2){
-									run("ls "+whole_entered_cmd[1]);
-								}
-								else if (whole_entered_cmd.length==1){
-									run("ls "+working_directory);
-								}
-								break;
-							case "echo":
-								if (whole_entered_cmd.length==1){
-									run("echo ");
-								}
-								else{
-									String print_string = entered_cmd.replace("echo ","");
-									run("echo "+print_string);
-								}
-								break;
-							case "mkdir":
-								run(entered_cmd);
-								break;
-							case "cd":
-								if (whole_entered_cmd.length==2){
-									//correct
-									cd(whole_entered_cmd[1]);
-								}
-								break;
-							case "pwd":
-								System.out.println(pwd());
-								break;
-						}
+					if ((!entered_cmd.contains("|")) &&(!entered_cmd.contains(";"))){
+						run_individual(entered_cmd);
+					}
+					//When commands are fancy
+					else if (entered_cmd.contains(";")){
+						run_anded(entered_cmd);
+					}
+					else{
+						run_piped(entered_cmd);
 					}
 				}
 				else{
@@ -102,6 +74,71 @@ class main{
 			System.out.println("System has no console.Email <adeebnqo@gmail.com> for more help.");
 			System.exit(0);
 		}
+	}
+	/*
+	Method for running individual processes/cmds
+	*/
+	public static void run_individual(String entered_cmd){
+		String[] whole_entered_cmd = entered_cmd.split(" ");
+                switch(whole_entered_cmd[0]){
+                	case "clear":
+                        	run("clear");
+                                break;
+                        case "ls":
+                        	boolean option_l = (whole_entered_cmd.length==3 ? true:false);
+                                if (whole_entered_cmd.length==2){
+                                	run("ls "+whole_entered_cmd[1]);
+                                        }
+                                else if (whole_entered_cmd.length==1){
+                                	run("ls "+working_directory);
+                                        }
+                                break;
+                        case "echo":
+                     		if (whole_entered_cmd.length==1){
+                                	run("echo ");
+                                        }
+                                else{
+                                	String print_string = entered_cmd.replace("echo ","");
+                                        run("echo "+print_string);
+                                    }
+                                break;
+                        case "mkdir":
+                        	run(entered_cmd);
+                                break;
+                   	case "cd":
+                        	if (whole_entered_cmd.length==2){
+                                	//correct
+                                        cd(whole_entered_cmd[1]);
+                                        }
+                                break;
+                        case "pwd":
+                        	System.out.println(pwd());
+                                break;
+            }
+
+	}
+	/*
+	Method for running ;'d commands
+	*/
+	public static void run_anded(String cmd){
+		String[] whole_cmd = cmd.split(";");
+		for (String current_string:whole_cmd){
+			System.out.println("one");
+			if (current_string.contains("|")){
+				System.out.println("two");
+				run_piped(current_string);
+			}
+			else{
+				System.out.println("three");
+				run_individual(current_string);
+			}
+		}
+	}
+	/*
+	This method is for preventing code duplication when dealing with |'d and ;'d processes.
+	*/
+	public static void run_piped(String cmd){
+
 	}
 	/*
 	THE FOLLOWING METHOD(S) REPRESENT THE IMPLEMENTATION OF EACH CMD. THEY USE (RUNTIME/PROCESSBUILDER).
@@ -151,7 +188,7 @@ class main{
 	______________________________________________________________________________________________________
 	THE FOLLOWING METHODS REPRESENT MY IMPLEMENTATION OF THE CMD'S. THEY DO NOT USE RUNTIME OR THE
 	PROCESSBUILDER. THEY WERE THE METHODS I WAS USING AT FIRST --- DUE TO BEING CONFUSED BY ASSIGNMENT
-	DESCRIPTION
+	DESCRIPTION. THEY ARE MAINLY FOR ASSISTING WHERE RUNTIME/PROCESSBUILDER IS USELESS.
 	
 	FINISHED METHODS:
 	-mkdir();
@@ -161,9 +198,6 @@ class main{
 	-echo();
 
 	UNFINISHED METHODS:
-	-cd();
-	A user cannot use relative paths. The user can however 'cd' backwards using  'cd ..'
-	
 	-grep();
 	Two implementations of grep() 'grep' are currently here.
 	The missing one has the following method signature : public static void grep(String arg);
