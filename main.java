@@ -29,6 +29,10 @@ import java.util.ArrayList;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.InputStreamReader;
 class main{
 	static Console terminal;
 	static String working_directory;
@@ -52,7 +56,7 @@ class main{
 			do{
 				System.out.print(username+"@JBa$h:#");
 				entered_cmd = terminal.readLine();
-				if (!entered_cmd.equals("exit")){
+				if (!entered_cmd.startsWith("exit")){
 					//if cmd does not contain pipes or "and(&)"
 					if ((!entered_cmd.contains("|")) &&(!entered_cmd.contains(";"))){
 						run_individual(entered_cmd);
@@ -68,7 +72,7 @@ class main{
 				else{
 					System.out.println("Goodbye!");
 				}
-			}while(!entered_cmd.equals("exit"));
+			}while(!entered_cmd.startsWith("exit"));
 		}
 		else{
 			System.out.println("System has no console.Email <adeebnqo@gmail.com> for more help.");
@@ -135,12 +139,81 @@ class main{
 		}
 	}
 	/*
-	This method is for preventing code duplication when dealing with |'d and ;'d processes.
+	This method is for running |'d commands
 	*/
 	public static void run_piped(String cmd){
+		int last_pos =0;
+		Vector<String> commands = new Vector<String>();
+		int string_length = cmd.length();
+		//spliting up the commands
+		for (int i=0;i<string_length;i++){
+			if (cmd.charAt(i)=='|'){
+				String sub = cmd.substring(last_pos,i);
+				last_pos = i;
+				commands.add(sub);
+			}
+		}
+		//running the actual commands
+		commands.add(cmd.substring(last_pos+1));
+		commands.trimToSize();
+		BufferedReader procOutput = null;
+		Process proc=null;//defining the process outside the loop so that we can can get the results afterwards
+		for (String cur_string:commands){
+			try{
+				//formatting the command
+				if (cur_string.contains("ls")){
+					String[] str = cur_string.split("\\s+");
+					if (str.length==1){
+						//if cmd is just ls
+						cur_string = "ls "+working_directory;
+					}
+					else if (str.length==2 && str[1].startsWith("-")){
+						//ls and flags only, no dir given
+						cur_string=cur_string+" "+working_directory;
+					}
+					else if (str.length==2){
+						//no flags given
+						if (!str[1].startsWith("/")){
+							//if not full path
+							cur_string = "ls "+working_directory+"/"+str[1];
+						}
+					}
+					else if (str.length==3){
+				        	if (!str[1].startsWith("/")){
+                                                	//if not full path
+                                                	cur_string = str[0]+" "+str[1]+" "+working_directory+"/"+str[2];
+                                        	}
+					}
+				}
+				
+				//starting the 'current' process--running the next cmd on the list of pipes
+				proc = Runtime.getRuntime().exec(cur_string); 
+				if (procOutput!=null){
+					BufferedWriter procInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
+					String line;
+					while((line=procOutput.readLine())!=null){
+						procInput.write(line);
+						procInput.newLine();
+					}
+				}
 
+				//reporting/documenting results of current process
+				procOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		//printing final output of the piped cmd
+		Scanner results = new Scanner(proc.getInputStream());
+		while(results.hasNextLine()){
+			System.out.println(results.nextLine());
+		}
 	}
+
+
 	/*
+	_______________________________________________________________________________________________________
 	THE FOLLOWING METHOD(S) REPRESENT THE IMPLEMENTATION OF EACH CMD. THEY USE (RUNTIME/PROCESSBUILDER).
 	THEY HAVE BEEN IMPLEMENTED BECAUSE OF WHAT T.A HAS E-MAILED ME
 
@@ -160,7 +233,10 @@ class main{
 	</e-mail>
 	
 	(EACH) METHOD WILL RUN, AND RETURN THE RESULT OF THE COMMAND IF IT HAS ONE (MAY IT BE ERROR OR SUCCESS)
+	_________________________________________________________________________________________________________
 	*/
+
+
 	
 	//Method for running a cmd
 	public static void run(String cmd){
