@@ -124,6 +124,9 @@ class main{
                         case "pwd":
                         	System.out.println(pwd());
                                 break;
+			default:
+				run(entered_cmd);
+				break;
             }
 
 	}
@@ -246,6 +249,7 @@ class main{
 	public static void run(String cmd){
 		try{
 			ProcessBuilder procBuilder = new ProcessBuilder(cmd.split("\\s+"));
+			procBuilder.directory(new File(working_directory));
 			Process proc = procBuilder.start();//Runtime.getRuntime().exec(cmd);
 			//Output of the cmd
 			InputStream out = proc.getInputStream();
