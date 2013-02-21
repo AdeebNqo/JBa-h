@@ -53,10 +53,12 @@ class main{
 			System.out.println("     '._ ~ ~ ~ |,/`````````````");
 			System.out.println("        ''--.~.|/");
 			System.out.println("Welcome to JBa$h");
+			String tmp_exit_value;
 			do{
 				System.out.print(username+"@JBa$h:#");
 				entered_cmd = terminal.readLine();
-				if (!entered_cmd.startsWith("exit")){
+				tmp_exit_value = entered_cmd.replaceAll("\\s","");
+				if (!tmp_exit_value.equals("exit")){
 					//if cmd does not contain pipes or "and(&)"
 					if ((!entered_cmd.contains("|")) &&(!entered_cmd.contains(";"))){
 						run_individual(entered_cmd);
@@ -65,14 +67,18 @@ class main{
 					else if (entered_cmd.contains(";")){
 						run_anded(entered_cmd);
 					}
-					else{
+					else if (entered_cmd.contains("|")){
 						run_piped(entered_cmd);
+					}
+					else{
+						System.out.println("shi");
+						run(entered_cmd);
 					}
 				}
 				else{
 					System.out.println("Goodbye!");
 				}
-			}while(!entered_cmd.startsWith("exit"));
+			}while(!tmp_exit_value.equals("exit"));
 		}
 		else{
 			System.out.println("System has no console.Email <adeebnqo@gmail.com> for more help.");
@@ -187,28 +193,26 @@ class main{
 				}
 				
 				//starting the 'current' process--running the next cmd on the list of pipes
-				proc = Runtime.getRuntime().exec(cur_string); 
-				if (procOutput!=null){
-					BufferedWriter procInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
-					String line;
-					while((line=procOutput.readLine())!=null){
-						procInput.write(line);
-						procInput.newLine();
-					}
+				System.out.println("abt to run: "+cur_string);
+				ProcessBuilder pb = new ProcessBuilder(cur_string.split("\\s+"));
+				proc = 	pb.start();//Runtime.getRuntime().exec(cur_string);
+				proc.waitFor();
+				System.out.println("process done!");
+				Scanner stdin = new Scanner(proc.getInputStream());
+				while(stdin.hasNextLine()){
+					System.out.println(stdin.nextLine());
 				}
-
-				//reporting/documenting results of current process
-				procOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
-		
+		/*
 		//printing final output of the piped cmd
 		Scanner results = new Scanner(proc.getInputStream());
 		while(results.hasNextLine()){
 			System.out.println(results.nextLine());
-		}
+		}*/
 	}
 
 
