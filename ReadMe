@@ -12,3 +12,6 @@ How to use:
 
 1. make
 2. make run
+
+This requires Java SE 7 as it uses a switch-case with strings; this is only
+available in Java SE7.
