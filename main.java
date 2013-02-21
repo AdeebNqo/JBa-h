@@ -245,7 +245,8 @@ class main{
 	//Method for running a cmd
 	public static void run(String cmd){
 		try{
-			Process proc = Runtime.getRuntime().exec(cmd);
+			ProcessBuilder procBuilder = new ProcessBuilder(cmd.split("\\s+"));
+			Process proc = procBuilder.start();//Runtime.getRuntime().exec(cmd);
 			//Output of the cmd
 			InputStream out = proc.getInputStream();
 			Scanner out_stream =new Scanner(out);
