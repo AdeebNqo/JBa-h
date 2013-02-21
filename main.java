@@ -173,13 +173,13 @@ class main{
 					}
 					else if (str.length==2){
 						//no flags given
-						if (!str[1].startsWith("/")){
+						if (!str[1].startsWith("/home")){
 							//if not full path
 							cur_string = "ls "+working_directory+"/"+str[1];
 						}
 					}
 					else if (str.length==3){
-				        	if (!str[1].startsWith("/")){
+				        	if (!str[1].startsWith("/home")){
                                                 	//if not full path
                                                 	cur_string = str[0]+" "+str[1]+" "+working_directory+"/"+str[2];
                                         	}
