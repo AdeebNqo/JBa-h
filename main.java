@@ -175,8 +175,8 @@ class main{
 		//running the actual commands
 		commands.add(cmd.substring(last_pos+1));
 		commands.trimToSize();
-		BufferedReader procOutput = null;
 		ProcessBuilder proc=null;//defining the process outside the loop so that we can can get the results afterwards
+		InputStream results = null;
 		for (String cur_string:commands){
 			try{
 				//formatting the command
@@ -205,30 +205,20 @@ class main{
 					}
 				}
 				//starting the 'current' process--running the next cmd on the list of pipes
-				System.out.println("Running: "+cur_string);
 				proc = new ProcessBuilder(cur_string.split("\\s"));
-				proc. redirectErrorStream(true);
-				final Process p = proc.start();//Runtime.getRuntime().exec(cur_string);
-				
-				//Handle streams
-				//in
-				p.getInputStream().close();
-				p.getErrorStream().close();
-				/*
-				new Thread(new Runnable(){
-					public void run(){
-						Scanner stdin = new Scanner(p.getInputStream());
-                                		while(stdin.hasNextLine()){
-                                        		System.out.println(stdin.nextLine());
-                                		}
-                                		stdin.close();
+				Process p = proc.start();
+				if (results!=null){
+					BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+					Scanner results_reader = new Scanner(results);
+					while(results_reader.hasNextLine()){
+						writer.write(results_reader.nextLine());
+						writer.newLine();
 					}
-				}).start();
-				*/
-				//wait
-				System.out.println("Waiting for "+cur_string);
+					writer.close();
+				}
+				results = p.getInputStream();
 				p.waitFor();
-				System.out.println("Done!");
+	
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -236,6 +226,10 @@ class main{
 		
 		//printing final output of the piped cmd
 		//<here>
+		Scanner final_results = new Scanner(results);
+		while(final_results.hasNextLine()){
+			System.out.println(final_results.nextLine());
+		}
 	}
 
 
