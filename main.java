@@ -166,7 +166,7 @@ class main{
 		commands.add(cmd.substring(last_pos+1));
 		commands.trimToSize();
 		BufferedReader procOutput = null;
-		Process proc=null;//defining the process outside the loop so that we can can get the results afterwards
+		ProcessBuilder proc=null;//defining the process outside the loop so that we can can get the results afterwards
 		for (String cur_string:commands){
 			try{
 				//formatting the command
@@ -194,28 +194,38 @@ class main{
                                         	}
 					}
 				}
-				
 				//starting the 'current' process--running the next cmd on the list of pipes
-				System.out.println("abt to run: "+cur_string);
-				ProcessBuilder pb = new ProcessBuilder(cur_string.split("\\s+"));
-				proc = 	pb.start();//Runtime.getRuntime().exec(cur_string);
-				proc.waitFor();
-				System.out.println("process done!");
-				Scanner stdin = new Scanner(proc.getInputStream());
-				while(stdin.hasNextLine()){
-					System.out.println(stdin.nextLine());
-				}
+				System.out.println("Running: "+cur_string);
+				proc = new ProcessBuilder(cur_string.split("\\s"));
+				proc. redirectErrorStream(true);
+				final Process p = proc.start();//Runtime.getRuntime().exec(cur_string);
 				
+				//Handle streams
+				//in
+				p.getInputStream().close();
+				p.getErrorStream().close();
+				/*
+				new Thread(new Runnable(){
+					public void run(){
+						Scanner stdin = new Scanner(p.getInputStream());
+                                		while(stdin.hasNextLine()){
+                                        		System.out.println(stdin.nextLine());
+                                		}
+                                		stdin.close();
+					}
+				}).start();
+				*/
+				//wait
+				System.out.println("Waiting for "+cur_string);
+				p.waitFor();
+				System.out.println("Done!");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
-		/*
+		
 		//printing final output of the piped cmd
-		Scanner results = new Scanner(proc.getInputStream());
-		while(results.hasNextLine()){
-			System.out.println(results.nextLine());
-		}*/
+		//<here>
 	}
 
 
