@@ -1,35 +1,34 @@
 /*
-* main.java
-*
-* Copyright 2013 Zola Mahlaza <adeebnqo@gmail.com>
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are
-* met:
-*
-* * Redistributions of source code must retain the above copyright
-* notice, this list of conditions and the following disclaimer.
-* * Redistributions in binary form must reproduce the above
-* copyright notice, this list of conditions and the following disclaimer
-* in the documentation and/or other materials provided with the
-* distribution.
-* * Neither the name of the nor the names of its
-* contributors may be used to endorse or promote products derived from
-* this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*
+Copyright (c) 2013 Zola Mahlaza <adeebnqo@gmail.com>. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+import java.util.LinkedList;
+import java.util.EmptyStackException;
 import java.io.Console;
 import java.io.File;
 import java.util.Vector;
@@ -43,6 +42,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
+import java.util.Stack;
+import java.util.Random;
+import java.util.Queue;
 class main{
 	static Console terminal;
 	static String working_directory;
@@ -53,20 +55,14 @@ class main{
 		terminal = System.console();
 		if (terminal!=null){
 			//Some cool art when you log in
-			System.out.println("       _..--'''@   \033[31m@\033[0m'''--.._");
-			System.out.println("     .'   \033[31m@\033[0m_/-//-\\/>/>'/ \033[31m@\033[0m  '.");
-			System.out.println("    (  \033[31m@\033[0m  /_<//<'/----------^-)");
-   			System.out.println("    |'._  \033[31m@\033[0m     //|###########|");
-			System.out.println("    |~  ''--..@|',|}}}}}}}}}}}|");
-			System.out.println("    |  ~   ~   |/ |###########|");
- 			System.out.println("    | ~~  ~   ~|./|{{{{{{{{{{{|");
-			System.out.println("     '._ ~ ~ ~ |,/`````````````");
-			System.out.println("        ''--.~.|/");
 			System.out.println("Welcome to JBa$h");
+			getWelcomeArt();
+			System.out.println();
 			String tmp_exit_value;
 			do{
-				System.out.print(username+"@JBa$h:#");
+				System.out.print(username+"@JBa$h:>");
 				entered_cmd = terminal.readLine();
+				entered_cmd = entered_cmd.replaceAll("^\\s+","");//removing leading whitespace
 				tmp_exit_value = entered_cmd.replaceAll("\\s","");
 				if (!tmp_exit_value.equals("exit")){
 					//if cmd does not contain pipes or "and(&)"
@@ -81,7 +77,6 @@ class main{
 						run_piped(entered_cmd);
 					}
 					else{
-						System.out.println("shi");
 						run(entered_cmd);
 					}
 				}
@@ -96,22 +91,159 @@ class main{
 		}
 	}
 	/*
+	Method for printing the welcome art
+	*/
+	public static void getWelcomeArt(){
+		Random gen = new Random();
+		int choice = gen.nextInt(5);
+		switch(choice){
+			case 0:
+				System.out.println("       _..--'''@   \033[31m@\033[0m'''--.._");
+                        	System.out.println("     .'   \033[31m@\033[0m_/-//-\\/>/>'/ \033[31m@\033[0m  '.");
+                        	System.out.println("    (  \033[31m@\033[0m  /_<//<'/----------^-)");
+                        	System.out.println("    |'._  \033[31m@\033[0m     //|\033[41m###########\033[0m|");
+                        	System.out.println("    |~  ''--..@|',|}}}}}}}}}}}|");
+                        	System.out.println("    |  ~   ~   |/ |\033[41m###########\033[0m|");
+                        	System.out.println("    | ~~  ~   ~|./|{{{{{{{{{{{|");
+                        	System.out.println("     '._ ~ ~ ~ |,/`````````````");
+                        	System.out.println("        ''--.~.|/");
+				break;
+			case 1:
+				System.out.println("           (                 ,&&&.");
+             			System.out.println("            )                .,.&&");
+            			System.out.println("           (  (              \\=__/");
+                		System.out.println("               )             ,'-'.");
+          			System.out.println("         (    (  ,,      _.__|/ /|");
+           			System.out.println("          ) /\\ -((------((_|___/ |");
+         			System.out.println("        (  // | (`'      ((  `'--|");
+         			System.out.println("        -.;_/ \\--._      \\ \\-._/.");
+      				System.out.println("     (_;-// | \\ \\-'.\\    <_,\\_\\`--'|");
+      				System.out.println(" 	 ( `.__ _  ___,')      <_,-'__,'");
+ 				System.out.println("jrei  `'(_ )_)(_)_)'");
+
+				break;
+			case 2:
+				System.out.println("Bungee Jumping");
+				System.out.println("=-=-=-=-=-=-=-=-=-)-=-=-=-=-=-=-=-=-=-");
+				System.out.println("_| |__| |________(_________| |__| |___");
+				System.out.println(" \\  \\/  /         )        \\  \\/  /");
+				System.out.println("  )    (         (          )    (");
+				System.out.println("  |    |         (          |    |");
+				System.out.println("  |    |          \\|        |    |");
+				System.out.println("  |    |           \\o       |    |");
+				System.out.println("  |    |           ( \\      |    |");
+				System.out.println("  |    |                    |    |");
+				System.out.println("  |    |                    |    |");
+				System.out.println("  |    |                    |    |Zot");
+				System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+				break;
+			case 3:
+				System.out.println("              a8888b.");
+             			System.out.println("             d888888b.");
+             			System.out.println("             8P\"YP\"Y88 ");
+             			System.out.println("             8|o||o|88 ");
+             			System.out.println("             8'    .88 ");
+             			System.out.println("             8`._.' Y8. ");
+            			System.out.println("            d/      `8b. ");
+           			System.out.println("           dP   .    Y8b. ");
+          			System.out.println("          d8:'  \"  `::88b ");
+         			System.out.println("         d8\"         'Y88b ");
+        			System.out.println("        :8P    '      :888 ");
+         			System.out.println("         8a.   :     _a88P ");
+       				System.out.println("      ._/\"Yaa_:   .| 88P| ");
+  				System.out.println(" jgs  \\    YP\"    `| 8P  `.");
+  				System.out.println("  a:f  /     \\.___.d|    .' ");
+       				System.out.println("       `--..__)8888P`._.' ");
+				break;
+			case 4:
+				System.out.println("__________________|      |____________________________________________");
+				System.out.println("     ,--.    ,--.          ,--.   ,--.");
+				System.out.println("    |oo  | _  \\  `.       | oo | |  oo|");
+				System.out.println("o  o|~~  |(_) /   ;       | ~~ | |  ~~|o  o  o  o  o  o  o  o  o  o  o");
+				System.out.println("    |/\\/\\|   '._,'        |/\\/\\| |/\\/\\|");
+				System.out.println("__________________        ____________________________________________");
+                  		System.out.println("                  |      |dwb");
+
+				break;
+		}
+		
+	}
+	/*
 	Method for running individual processes/cmds
 	*/
 	public static void run_individual(String entered_cmd){
-		String[] whole_entered_cmd = entered_cmd.split(" ");
-                switch(whole_entered_cmd[0]){
+		//starting by removing leading whitespace
+		entered_cmd = entered_cmd.replaceAll("^\\s+","");
+		String[] whole_entered_cmd = entered_cmd.split("\\s+");
+		Queue<String> q = new LinkedList<String>();
+		for (String val: whole_entered_cmd){
+			q.offer(val);
+		}
+		
+		//Running the cmd
+		String cmd =null;
+		String flags =null;
+		String path =null;
+		
+		cmd = q.poll();
+		String tmp;
+		if (q.peek()!=null){
+			tmp = q.poll();
+			if (tmp.startsWith("-")){
+				flags = tmp;
+				
+				//if there is something left on the q
+				if (q.peek()!=null){
+					path = q.poll();
+				}
+			}
+			else{
+				path = tmp;
+			}
+		}
+                switch(cmd){
                 	case "clear":
                         	run("clear");
                                 break;
                         case "ls":
-                        	boolean option_l = (whole_entered_cmd.length==3 ? true:false);
-                                if (whole_entered_cmd.length==2){
-                                	run("ls "+whole_entered_cmd[1]);
-                                        }
-                                else if (whole_entered_cmd.length==1){
-                                	run("ls "+working_directory);
-                                        }
+				//if path is null, we have to use our current directory -- the stored one
+                        	if (path==null){
+					if (flags!=null){
+						run(cmd+" "+flags+" "+working_directory);
+					}
+					else{
+						run(cmd+" "+working_directory);
+					}
+				}
+				//if path has been specified
+				else{
+					//if its a absolute path
+					if (path.startsWith("/")){
+						if (flags!=null){
+							run(cmd+" "+flags+" "+path);
+						}
+						else{
+							run(cmd+" "+path);
+						}
+					}
+					//if it's a relative path
+					else{
+						File tmp_file = new File(working_directory+"/"+path);
+						if (tmp_file.exists()){
+							//if this file exists, list it's contents
+							if (flags!=null){
+								run(cmd+" "+flags+" "+tmp_file.getAbsolutePath());
+							}
+							else{
+								run(cmd+" "+tmp_file.getAbsolutePath());
+							}
+						}
+						else{
+							//print error message
+							System.out.println("cannot access "+path+" : No such file or directory");
+						}
+					}
+				}
                                 break;
                         case "echo":
                      		if (whole_entered_cmd.length==1){
@@ -126,10 +258,12 @@ class main{
                         	run(entered_cmd);
                                 break;
                    	case "cd":
-                        	if (whole_entered_cmd.length==2){
-                                	//correct
-                                        cd(whole_entered_cmd[1]);
-                                        }
+				if (path==null){
+					cd("");
+				}
+				else{
+					cd(path);
+				}
                                 break;
                         case "pwd":
                         	System.out.println(pwd());
@@ -146,13 +280,10 @@ class main{
 	public static void run_anded(String cmd){
 		String[] whole_cmd = cmd.split(";");
 		for (String current_string:whole_cmd){
-			System.out.println("one");
 			if (current_string.contains("|")){
-				System.out.println("two");
 				run_piped(current_string);
 			}
 			else{
-				System.out.println("three");
 				run_individual(current_string);
 			}
 		}
@@ -160,6 +291,7 @@ class main{
 	/*
 	This method is for running |'d commands
 	*/
+	String test_cmd;//This is not reall importan
 	public static void run_piped(String cmd){
 		int last_pos =0;
 		Vector<String> commands = new Vector<String>();
@@ -178,6 +310,8 @@ class main{
 		ProcessBuilder proc=null;//defining the process outside the loop so that we can can get the results afterwards
 		InputStream results = null;
 		for (String cur_string:commands){
+			cur_string = (cur_string.replaceAll("\\s+"," "));
+			cur_string = cur_string.replaceAll("^\\s+","");
 			try{
 				//formatting the command
 				if (cur_string.contains("ls")){
@@ -215,9 +349,10 @@ class main{
 						writer.newLine();
 					}
 					writer.close();
+					results_reader.close();
 				}
-				results = p.getInputStream();
 				p.waitFor();
+				results = p.getInputStream();
 	
 			}catch(Exception e){
 				e.printStackTrace();
@@ -417,49 +552,69 @@ class main{
 		matches.trimToSize();
 		return matches;
 	}
+	/*
+	___________________________________________________________________________
+	END OF METHODS WHICH ARE UNUSED
+
+	____________________________________________________________________________
+	*/
+
 	//Method for changing the directory
 	public static void cd(String dir){
-		File new_dir = new File(dir);
-		if (new_dir.exists()){
-			if (new_dir.isDirectory()){
-				if (dir.equals("..")){
-					//if you are in the / directory
-					if (working_directory.equals("/")){
-						//do nothing -- you cannot move backwards anymore
-					}
-					else{
-						File back_dir = new File(working_directory+"/..");
-						String prev_dir = back_dir.getAbsoluteFile().getParentFile().getParentFile().toString();
-						if (prev_dir==null){
-							working_directory = "/";
+		try{
+			//Starting by creating the folder
+			File tmp;
+			if (dir.startsWith("/")){
+				tmp = new File(dir);
+			}
+			else{
+				tmp = new File(working_directory+"/"+dir);
+			}
+			//determining the existance of the folder
+			if (tmp.exists() && tmp.isDirectory()){
+				String new_path = sanitizePath(tmp.getAbsolutePath());
+				working_directory = new_path;
+			}
+			//if the folder does not exist
+			else{
+				System.out.println(dir+": No such file or directory");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	//Method for sanitising path when it contains ..
+	public static String sanitizePath(String path){
+		String[] path_array = path.split("/");
+		if (path.contains("..")){
+			try{
+				Stack<String> tokens = new Stack<String>();
+				for (String cur_string:path_array){
+					if (!cur_string.equals("")){
+						if (cur_string.equals("..")){
+							tokens.pop();
 						}
 						else{
-							working_directory=prev_dir;
+							tokens.push(cur_string);
 						}
 					}
 				}
-				else if (!dir.equals(".")){
-					working_directory = dir;
+	
+				//Joining the remaining strings
+				StringBuilder str = new StringBuilder();
+				for (String cur_string:tokens){
+					str.append("/"+cur_string);
 				}
-				else if (dir.startsWith("./")){
-					run("cd "+dir);
-				}
-			}
-			else{
-				System.out.println(dir+":  Not a directory.");
+				path = str.toString();
+			}catch(EmptyStackException e){
+				return "/";
 			}
 		}
-		else{
-			File tmp_dir = new File(working_directory);
-			File move_to_dir = new File(tmp_dir.getAbsolutePath()+"/"+dir);
-			if (move_to_dir.exists() && move_to_dir.isDirectory()){
-				String my_dir = move_to_dir.getAbsolutePath();
-				working_directory = my_dir;
-                        }
-			else{
-				//directory does not exist
-				System.out.println(dir+":  No such file or directory.");
-			}
+		if (path.startsWith("./")){
+			path = path.substring(1);
 		}
+		path = path.replaceAll("/\\.","");
+		return path;
 	}
 }
