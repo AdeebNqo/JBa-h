@@ -1,11 +1,10 @@
 Dev Info
--------------
+============
 Zola Mahlaza
-MHLZOL004
 "jBash"
 
 Licence notice
---------------
+==============
 Copyright (c) 2013 Zola Mahlaza <adeebnqo@gmail.com>. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -36,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 How to get started
-------------------
+===================
 
 The project has been provided with a Makefile. If missing, please email me
 at [adeebnqo at gmail dot com].
