@@ -1,6 +1,7 @@
 Dev Info
 ============
 Zola Mahlaza
+
 "jBash"
 
 Licence notice
@@ -42,11 +43,17 @@ at [adeebnqo at gmail dot com].
 
 The Makefile has the basic rules.
 compiling:
+
 	make
+	
 Running:
+
 	make run
+	
 Cleaning up class files:
+
 	make clean
 
 Alternatively, you could run the provided .jar file via the command line via:
+
 	java -jar jBash.jar
