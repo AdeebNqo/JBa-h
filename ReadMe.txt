@@ -1,7 +1,6 @@
 Dev Info
 -------------
 Zola Mahlaza
-MHLZOL004
 "jBash"
 
 Licence notice
